@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Sistem HaifaCell</title>
+    <link rel="manifest" href="manifest.json" />
+    <meta name="theme-color" content="#1a1a2e" />
+    <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+    <!-- ========== SPLASH SCREEN ========== -->
+    <div id="splash-screen">
+        <div class="splash-content">
+            <div class="logo-wrapper"><div class="splash-logo">💰</div></div>
+            <div class="loading-bar"><div class="loading-progress" id="progress"></div></div>
+            <p class="loading-text">Memuat aplikasi...</p>
+        </div>
+    </div>
+
+    <!-- ========== HEADER (dengan hamburger menu) ========== -->
+    <header class="app-header">
+        <button class="hamburger-btn" id="hamburgerBtn">☰</button>
+        <h1 class="app-title">HaifaCell</h1>
+        <div style="width: 40px;"></div>
+    </header>
+
+    <!-- ========== OVERLAY (untuk menutup sidebar) ========== -->
+    <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+    <!-- ========== SIDEBAR ========== -->
+    <nav class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <div class="sidebar-logo">💰</div>
+            <h2>Sistem HaifaCell</h2>
+            <p class="sidebar-version">v1.0.0</p>
+        </div>
+        <ul class="sidebar-menu">
+            <li class="sidebar-item active" data-page="dashboard">
+                <span class="icon">🏠</span> Dashboard
+            </li>
+            <li class="sidebar-item" data-page="kelola">
+                <span class="icon">📋</span> Kelola Transaksi
+            </li>
+            <li class="sidebar-item" data-page="grafik">
+                <span class="icon">📊</span> Grafik
+            </li>
+            <li class="sidebar-item" data-page="log">
+                <span class="icon">📝</span> Log Aktivitas
+            </li>
+            <li class="sidebar-item" data-page="laporan">
+                <span class="icon">📄</span> Laporan
+            </li>
+            <li class="sidebar-item" data-page="pengaturan">
+                <span class="icon">⚙️</span> Pengaturan
+            </li>
+        </ul>
+        <div class="sidebar-footer">
+            <p>© 2026 KeuanganKu</p>
+        </div>
+    </nav>
+
+    <!-- ========== MAIN CONTENT ========== -->
+    <main class="main-content" id="mainContent">
+
+        <!-- ========================================== -->
+        <!-- 1. DASHBOARD (Halaman Utama)               -->
+        <!-- ========================================== -->
+        <section id="page-dashboard" class="page active">
+            <!-- Navbar (Servis HP, Aksesoris, Dana, Agen Pulsa) -->
+            <nav class="navbar">
+                <button class="nav-btn" data-kategori="Servis HP">Servis HP</button>
+                <button class="nav-btn" data-kategori="Aksesoris">Aksesoris</button>
+                <button class="nav-btn" data-kategori="Dana">Dana</button>
+                <button class="nav-btn" data-kategori="Agen Pulsa">Agen Pulsa</button>
+            </nav>
+
+            <div class="dashboard-content">
+                <div class="saldo-grid">
+                    <div class="saldo-card cash">
+                        <h4>💵 Saldo CASH</h4>
+                        <p class="saldo-nominal" id="saldo-cash">Rp 1.500.000</p>
+                    </div>
+                    <div class="saldo-card dana">
+                        <h4>💳 Saldo DANA</h4>
+                        <p class="saldo-nominal" id="saldo-dana">Rp 500.000</p>
+                    </div>
+                    <div class="saldo-card agen">
+                        <h4>📱 Saldo AGEN PULSA</h4>
+                        <p class="saldo-nominal" id="saldo-agen">Rp 250.000</p>
+                    </div>
+                </div>
+                <button class="btn-edit" id="btnEditSaldo">✏️ Edit Saldo</button>
+            </div>
+        </section>
+
+        <!-- ========================================== -->
+        <!-- 2. KELOLA TRANSAKSI (Riwayat + Edit/Hapus) -->
+        <!-- ========================================== -->
+        <section id="page-kelola" class="page" style="display:none;">
+            <div class="page-header">
+                <h2>📋 Kelola Transaksi</h2>
+                <p style="color:rgba(255,255,255,0.4);font-size:14px;">Klik ✏️ untuk edit, 🗑️ untuk hapus</p>
+            </div>
+            <div class="filter-riwayat">
+                <select id="filterKategori">
+                    <option value="all">Semua Kategori</option>
+                    <option value="Servis HP">Servis HP</option>
+                    <option value="Aksesoris">Aksesoris</option>
+                    <option value="Dana">Dana</option>
+                    <option value="Agen Pulsa">Agen Pulsa</option>
+                </select>
+            </div>
+            <ul id="listRiwayat">
+                <!-- Akan diisi JavaScript -->
+            </ul>
+        </section>
+
+        <!-- ========================================== -->
+        <!-- 3. GRAFIK                                 -->
+        <!-- ========================================== -->
+        <section id="page-grafik" class="page" style="display:none;">
+            <div class="page-header">
+                <h2>📊 Grafik Keuangan</h2>
+            </div>
+            <div style="padding:0 20px;">
+                <div style="background:rgba(255,255,255,0.04);border-radius:16px;padding:20px;margin-bottom:16px;">
+                    <h3 style="font-size:14px;color:rgba(255,255,255,0.5);margin-bottom:8px;">Pemasukan vs Pengeluaran</h3>
+                    <canvas id="chartKeuangan" style="width:100%;height:200px;"></canvas>
+                </div>
+                <div style="background:rgba(255,255,255,0.04);border-radius:16px;padding:20px;">
+                    <h3 style="font-size:14px;color:rgba(255,255,255,0.5);margin-bottom:8px;">Distribusi Per Kategori</h3>
+                    <canvas id="chartKategori" style="width:100%;height:200px;"></canvas>
+                </div>
+            </div>
+        </section>
+
+        <!-- ========================================== -->
+        <!-- 4. LOG AKTIVITAS                          -->
+        <!-- ========================================== -->
+        <section id="page-log" class="page" style="display:none;">
+            <div class="page-header">
+                <h2>📝 Log Aktivitas</h2>
+                <p style="color:rgba(255,255,255,0.4);font-size:14px;">Semua perubahan tercatat di sini</p>
+            </div>
+            <ul id="listLog">
+                <!-- Akan diisi JavaScript -->
+            </ul>
+        </section>
+
+        <!-- ========================================== -->
+        <!-- 5. LAPORAN                                -->
+        <!-- ========================================== -->
+        <section id="page-laporan" class="page" style="display:none;">
+            <div class="page-header">
+                <h2>📄 Laporan Transaksi</h2>
+            </div>
+            <div style="padding:0 20px;">
+                <div style="background:rgba(255,255,255,0.04);border-radius:16px;padding:20px;margin-bottom:16px;">
+                    <label style="font-size:13px;color:rgba(255,255,255,0.5);">Filter Periode</label>
+                    <select id="filterBulan" style="width:100%;padding:12px;border-radius:12px;background:rgba(255,255,255,0.05);color:white;border:1px solid rgba(255,255,255,0.08);margin-top:6px;">
+                        <option value="all">Semua Waktu</option>
+                        <option value="2026-08">Agustus 2026</option>
+                        <option value="2026-07">Juli 2026</option>
+                    </select>
+                </div>
+                <button class="btn-edit" id="btnExportLaporan" style="margin-bottom:16px;">📤 Export Laporan (CSV)</button>
+                <div id="laporanContent">
+                    <!-- Akan diisi JavaScript -->
+                </div>
+            </div>
+        </section>
+
+        <!-- ========================================== -->
+        <!-- 6. PENGATURAN                            -->
+        <!-- ========================================== -->
+        <section id="page-pengaturan" class="page" style="display:none;">
+            <div class="page-header">
+                <h2>⚙️ Pengaturan</h2>
+            </div>
+            <div style="padding:0 20px;">
+                <div style="background:rgba(255,255,255,0.04);border-radius:16px;padding:20px;margin-bottom:16px;">
+                    <button class="btn-edit" id="btnBackupData" style="margin-bottom:12px;">💾 Backup Data</button>
+                    <button class="btn-edit" id="btnRestoreData" style="background:linear-gradient(135deg,#f59e0b,#d97706);">🔄 Restore Data</button>
+                </div>
+                <div style="background:rgba(255,255,255,0.04);border-radius:16px;padding:20px;">
+                    <p style="color:rgba(255,255,255,0.4);font-size:13px;">Jumlah Transaksi: <span id="totalTransaksi">0</span></p>
+                    <p style="color:rgba(255,255,255,0.4);font-size:13px;">Saldo Cash: <span id="infoCash">Rp 0</span></p>
+                    <p style="color:rgba(255,255,255,0.4);font-size:13px;">Saldo Dana: <span id="infoDana">Rp 0</span></p>
+                    <p style="color:rgba(255,255,255,0.4);font-size:13px;">Saldo Agen: <span id="infoAgen">Rp 0</span></p>
+                </div>
+            </div>
+        </section>
+
+        <!-- ========================================== -->
+        <!-- 7. FORM TRANSAKSI (muncul dari navbar)    -->
+        <!-- ========================================== -->
+        <section id="page-transaksi" class="page" style="display:none;">
+            <div class="transaksi-header">
+                <button class="btn-back" id="btnBackDashboard">← Kembali</button>
+                <h2 id="transaksi-title">Tambah Transaksi</h2>
+            </div>
+
+            <!-- FORM SERVIS HP -->
+            <div id="form-servis" class="form-category" style="display:none;">
+                <div class="wallet-info">📱 Form Servis HP</div>
+                <form id="formServis">
+                    <input type="text" id="servis-kerusakan" placeholder="Deskripsi Kerusakan (contoh: LCD Pecah)" required />
+                    <input type="number" id="servis-nominal" placeholder="Total Biaya Servis (Rp)" required />
+                    <label style="font-size:13px;color:rgba(255,255,255,0.5);margin-top:8px;">Apakah perlu beli sparepart?</label>
+                    <select id="servis-perlu-sparepart">
+                        <option value="tidak">Tidak</option>
+                        <option value="ya">Ya, butuh sparepart</option>
+                    </select>
+                    <div id="servis-sparepart-detail" style="display:none; margin-top:8px;">
+                        <input type="text" id="servis-sparepart-nama" placeholder="Nama Sparepart (contoh: LCD)" />
+                        <input type="number" id="servis-sparepart-harga" placeholder="Harga Sparepart (Rp)" />
+                        <select id="servis-sparepart-sumber">
+                            <option value="cash">Sumber Dana: Cash</option>
+                            <option value="dana">Sumber Dana: Dana</option>
+                        </select>
+                    </div>
+                    <select id="servis-metode-bayar">
+                        <option value="cash">Metode Bayar: Tunai (Cash)</option>
+                        <option value="dana">Metode Bayar: QRIS / Dana</option>
+                    </select>
+                    <button type="submit">💾 Simpan Transaksi Servis</button>
+                </form>
+            </div>
+
+            <!-- FORM AKSESORIS -->
+            <div id="form-aksesoris" class="form-category" style="display:none;">
+                <div class="wallet-info">🛍️ Form Aksesoris</div>
+                <form id="formAksesoris">
+                    <input type="text" id="aksesoris-nama" placeholder="Nama Aksesoris (contoh: Case HP)" required />
+                    <input type="number" id="aksesoris-nominal" placeholder="Harga Jual (Rp)" required />
+                    <select id="aksesoris-metode-bayar">
+                        <option value="cash">Metode Bayar: Tunai (Cash)</option>
+                        <option value="dana">Metode Bayar: QRIS / Dana</option>
+                    </select>
+                    <button type="submit">💾 Simpan Transaksi Aksesoris</button>
+                </form>
+            </div>
+
+            <!-- FORM DANA -->
+            <div id="form-dana" class="form-category" style="display:none;">
+                <div class="wallet-info">💳 Form Dana</div>
+                <form id="formDana">
+                    <select id="dana-tipe">
+                        <option value="topup">Top Up (Isi Saldo Dana)</option>
+                        <option value="tarik">Tarik (Tarik Saldo Dana ke Cash)</option>
+                    </select>
+                    <input type="number" id="dana-nominal" placeholder="Nominal (Rp)" required />
+                    <p style="font-size:12px; color:rgba(255,255,255,0.4); margin-top:4px;">* Top Up: Dana (-), Cash (+). Tarik: Dana (+), Cash (-).</p>
+                    <button type="submit">💾 Simpan Transaksi Dana</button>
+                </form>
+            </div>
+
+            <!-- FORM AGEN PULSA -->
+            <div id="form-agen" class="form-category" style="display:none;">
+                <div class="wallet-info">📱 Form Agen Pulsa</div>
+                <form id="formAgen">
+                    <select id="agen-produk">
+                        <option value="pulsa">Pulsa HP</option>
+                        <option value="token">Token Listrik</option>
+                        <option value="air">Isi Ulang Air</option>
+                    </select>
+                    <input type="number" id="agen-nominal" placeholder="Nominal (Rp)" required />
+                    <select id="agen-metode-bayar">
+                        <option value="cash">Metode Bayar: Tunai (Cash)</option>
+                        <option value="dana">Metode Bayar: QRIS / Dana</option>
+                    </select>
+                    <p style="font-size:12px; color:rgba(255,255,255,0.4); margin-top:4px;">* Saldo Agen Pulsa akan berkurang, uang masuk ke wallet sesuai metode bayar.</p>
+                    <button type="submit">💾 Simpan Transaksi Agen</button>
+                </form>
+            </div>
+
+            <!-- DAFTAR TRANSAKSI (di halaman transaksi) -->
+            <div class="daftar-transaksi">
+                <h3>📋 Riwayat Transaksi</h3>
+                <ul id="listTransaksi">
+                    <!-- Akan diisi JavaScript -->
+                </ul>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- ========== MODAL EDIT SALDO ========== -->
+    <div id="editSaldoModal" class="modal" style="display:none;">
+        <div class="modal-content">
+            <h2>✏️ Edit Saldo Awal</h2>
+            <p style="color:rgba(255,255,255,0.5);font-size:14px;margin-bottom:16px;">Masukkan angka saldo awal untuk masing-masing wallet</p>
+            <label class="modal-label">Saldo Cash</label>
+            <input type="number" id="editCash" class="modal-input" placeholder="0" />
+            <label class="modal-label">Saldo Dana</label>
+            <input type="number" id="editDana" class="modal-input" placeholder="0" />
+            <label class="modal-label">Saldo Agen Pulsa</label>
+            <input type="number" id="editAgen" class="modal-input" placeholder="0" />
+            <div class="modal-actions">
+                <button class="btn-cancel" id="btnCancelEdit">Batal</button>
+                <button class="btn-save" id="btnSaveEdit">Simpan</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ========== MODAL EDIT TRANSAKSI ========== -->
+    <div id="editTransaksiModal" class="modal" style="display:none;">
+        <div class="modal-content">
+            <h2>✏️ Edit Transaksi</h2>
+            <form id="formEditTransaksi">
+                <input type="text" id="edit-deskripsi" placeholder="Deskripsi" required />
+                <input type="number" id="edit-nominal" placeholder="Nominal (Rp)" required />
+                <select id="edit-tipe">
+                    <option value="pemasukan">Pemasukan</option>
+                    <option value="pengeluaran">Pengeluaran</option>
+                </select>
+                <select id="edit-wallet">
+                    <option value="cash">Cash</option>
+                    <option value="dana">Dana</option>
+                    <option value="agen">Agen Pulsa</option>
+                </select>
+                <input type="hidden" id="edit-transaction-id" />
+                <div class="modal-actions">
+                    <button type="button" class="btn-cancel" id="btnCancelEditTransaksi">Batal</button>
+                    <button type="submit" class="btn-save">💾 Simpan Perubahan</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- ========== SCRIPTS ========== -->
+    <script src="https://unpkg.com/dexie@latest/dist/dexie.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="main.js"></script>
+
+</body>
+</html>

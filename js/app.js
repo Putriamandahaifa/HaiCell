@@ -1,4 +1,33 @@
 // ==========================================
+// HEADER - PENGATURAN
+// ==========================================
+document.getElementById('headerSettingsBtn')?.addEventListener('click', function() {
+    // Pindah ke halaman Pengaturan
+    document.querySelectorAll('.page').forEach(p => p.style.display = 'none');
+    
+    const pagePengaturan = document.getElementById('page-pengaturan');
+    if (pagePengaturan) {
+        pagePengaturan.style.display = 'block';
+    }
+
+    // Update active state di bottom nav (opsional)
+    document.querySelectorAll('.bottom-btn').forEach(btn => {
+        btn.classList.remove('active');
+        if (btn.dataset.page === 'pengaturan') {
+            btn.classList.add('active');
+        }
+    });
+
+     // Update active state di sidebar (opsional)
+    document.querySelectorAll('.sidebar-item').forEach(item => {
+        item.classList.remove('active');
+        if (item.dataset.page === 'pengaturan') {
+            item.classList.add('active');
+        }
+    });
+});
+
+// ==========================================
 // DATABASE (IndexedDB)
 // ==========================================
 const db = new Dexie('HaifaCellDB');
@@ -155,5 +184,72 @@ function initApp() {
             if (page === 'riwayat') renderRiwayat();
             if (page === 'laporan') renderLaporan();
         });
+    });
+    
+    // ===== BACKUP & RESTORE =====
+    document.getElementById('btnBackupData')?.addEventListener('click', function() {
+        if (transactions.length === 0) {
+            alert('Belum ada data untuk di-backup!');
+            return;
+        }
+        
+        const data = {
+            version: '1.0',
+            timestamp: new Date().toISOString(),
+            balances: initialBalances,
+            transactions: transactions,
+            logs: logs
+        };
+        
+        const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `backup-haifa-cell-${new Date().toISOString().slice(0,10)}.json`;
+        a.click();
+        URL.revokeObjectURL(url);
+        alert('✅ Backup berhasil! File sudah didownload.');
+    });
+
+    document.getElementById('btnRestoreData')?.addEventListener('click', function() {
+        const input = document.createElement('input');
+        input.type = 'file';
+        input.accept = '.json';
+        
+        input.onchange = function(e) {
+            const file = e.target.files[0];
+            if (!file) return;
+            
+            const reader = new FileReader();
+            reader.onload = function(event) {
+                try {
+                    const data = JSON.parse(event.target.result);
+                    
+                    if (!data.balances || !data.transactions) {
+                        alert('❌ File tidak valid! Pastikan file backup dari Haifa Cell.');
+                        return;
+                    }
+                    
+                    if (!confirm('⚠️ Restore akan MENIMPA semua data yang ada saat ini. Lanjutkan?')) return;
+                    
+                    initialBalances = data.balances;
+                    transactions = data.transactions || [];
+                    logs = data.logs || [];
+                    
+                    saveAllData();
+                    updateSaldo();
+                    renderRiwayatSingkat();
+                    
+                    alert(`✅ Restore berhasil!\n${transactions.length} transaksi dipulihkan.`);
+                    
+                } catch (err) {
+                    alert('❌ Gagal membaca file! Pastikan file backup valid.');
+                    console.error('Restore error:', err);
+                }
+            };
+            reader.readAsText(file);
+        };
+        
+        input.click();
     });
 }

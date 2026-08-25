@@ -131,6 +131,21 @@ body {
     background: rgba(255,255,255,0.15);
 }
 
+/* ===== HEADER BUTTON ===== */
+.header-btn {
+    background: transparent;
+    border: none;
+    color: white;
+    font-size: 22px;
+    padding: 4px 8px;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+.header-btn:hover {
+    color: #e94560;
+    transform: rotate(30deg);
+}
+
 /* ===== MAIN CONTENT ===== */
 .main-content {
     margin-top: 60px;
@@ -761,13 +776,6 @@ body {
     }
 }
 
-/* FORCE TAMPILKAN TAB LAPORAN
-#tab-keuangan,
-#tab-transaksi,
-#tab-sparepart {
-    display: block !important;
-} */
-
 .page-header {
     display: flex;
     flex-direction: column;
@@ -775,4 +783,16 @@ body {
     justify-content: center;
     padding: 16px 20px 8px;
     text-align: center;
+}
+.btn-edit{
+    flex: 1;
+    padding: 10px 30px;
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.06);
+    border-radius: 12px;
+    color: rgba(255,255,255,0.5);
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s;
 }

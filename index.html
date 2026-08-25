@@ -34,6 +34,7 @@
     <!-- ========================================== -->
     <header class="app-header">
         <h1 class="app-title">Haifa Cell</h1>
+        <button class="header-btn" id="headerSettingsBtn">⚙️</button>
     </header>
 
     <!-- ========================================== -->
@@ -463,6 +464,39 @@
             </div>
         </section>
         <!-- === PAGE: LAPORAN ENDS=== -->
+
+        <!-- ========================================== -->
+        <!-- PAGE: PENGATURAN                          -->
+        <!-- ========================================== -->
+        <section id="page-pengaturan" class="page" style="display:none;">
+            <div class="page-header">
+                <h2>⚙️ Pengaturan</h2>
+                <p style="color:rgba(255,255,255,0.4);font-size:14px;">
+                    Kelola data dan pengaturan aplikasi
+                </p>
+            </div>
+            
+            <div style="padding: 0 16px;">
+                <!-- Backup -->
+                <div style="background:rgba(255,255,255,0.04);border-radius:16px;padding:20px;margin-bottom:16px;">
+                    <h3 style="font-size:16px;font-weight:600;margin-bottom:8px;">💾 Backup Data</h3>
+                    <p style="font-size:13px;color:rgba(255,255,255,0.4);margin-bottom:12px;">
+                        Simpan semua data ke file JSON (cocok buat pindah HP)
+                    </p>
+                    <button id="btnBackupData" class="btn-edit" style="background:linear-gradient(135deg,#96ce3d,#407726);">📥 Download Backup</button>
+                </div>
+                
+                <!-- Restore -->
+                <div style="background:rgba(255,255,255,0.04);border-radius:16px;padding:20px;margin-bottom:16px;">
+                    <h3 style="font-size:16px;font-weight:600;margin-bottom:8px;">🔄 Restore Data</h3>
+                    <p style="font-size:13px;color:rgba(255,255,255,0.4);margin-bottom:12px;">
+                        Pulihkan data dari file backup (akan menimpa data saat ini)
+                    </p>
+                    <button id="btnRestoreData" class="btn-edit" style="background:linear-gradient(135deg,#f59e0b,#d97706);">📤 Upload Backup</button>
+                </div>
+            </div>
+        </section>
+        <!-- === PAGE: PENGATURAN ENDS=== -->
     </main>
 
     <!-- ========================================== -->

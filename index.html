@@ -1,0 +1,564 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Haifa Cell</title>
+    
+    <!-- PWA Manifest -->
+    <link rel="manifest" href="manifest.json" />
+    <meta name="theme-color" content="#0f0f1a" />
+    
+    <!-- CSS -->
+    <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+
+    <!-- ========================================== -->
+    <!-- 1. SPLASH SCREEN                          -->
+    <!-- ========================================== -->
+    <div id="splash-screen">
+        <div class="splash-content">
+            <div class="logo-wrapper">
+                <span class="splash-logo">📱</span>
+            </div>
+            <div class="loading-bar">
+                <div class="loading-progress" id="progress"></div>
+            </div>
+            <p class="loading-text">Haifa Cell</p>
+        </div>
+    </div>
+
+    <!-- ========================================== -->
+    <!-- 2. HEADER                                 -->
+    <!-- ========================================== -->
+    <header class="app-header">
+        <h1 class="app-title">Haifa Cell</h1>
+    </header>
+
+    <!-- ========================================== -->
+    <!-- 4. MAIN CONTENT                          -->
+    <!-- ========================================== -->
+    <main class="main-content" id="mainContent">
+
+        <!-- ========================================== -->
+        <!-- PAGE: DASHBOARD (HOME)                    -->
+        <!-- ========================================== -->
+        <section id="page-dashboard" class="page active">
+            <!-- Kartu Saldo -->
+            <div class="saldo-grid">
+                <div class="saldo-card dana">
+                    <h4>💳 Saldo Dana</h4>
+                    <p class="saldo-nominal" id="saldo-dana">Rp 0</p>
+                </div>
+                <div class="saldo-card cash">
+                    <h4>💵 Saldo Cash</h4>
+                    <p class="saldo-nominal" id="saldo-cash">Rp 0</p>
+                </div>
+                <div class="saldo-card agen">
+                    <h4>📱 Saldo Agen Pulsa</h4>
+                    <p class="saldo-nominal" id="saldo-agen">Rp 0</p>
+                </div>
+            </div>
+
+            <!-- Menu Grid (5 tombol) -->
+            <div class="menu-grid">
+                <button class="menu-btn" data-kategori="Dana">
+                    <span class="menu-icon">💳</span>
+                    <span class="menu-label">Dana</span>
+                </button>
+                <button class="menu-btn" data-kategori="Servis HP">
+                    <span class="menu-icon">🔧</span>
+                    <span class="menu-label">Servis HP</span>
+                </button>
+                <button class="menu-btn" data-kategori="Agen Pulsa">
+                    <span class="menu-icon">📱</span>
+                    <span class="menu-label">Agen Pulsa</span>
+                </button>
+                <button class="menu-btn" data-kategori="Aksesoris & Kartu">
+                    <span class="menu-icon">🛍️</span>
+                    <span class="menu-label">Aksesoris & Kartu</span>
+                </button>
+                <button class="menu-btn" data-kategori="Restock">
+                    <span class="menu-icon">📦</span>
+                    <span class="menu-label">Restock</span>
+                </button>
+                <button class="btn-edit-saldo" id="btnEditSaldo">
+                    <span class="menu-icon">✏️</span>
+                    <span class="menu-label">Edit Saldo</span>
+                </button>
+            </div>
+
+            <!-- Riwayat Singkat (5 transaksi terakhir) -->
+            <div class="riwayat-singkat">
+                <h3>📋 Transaksi Terakhir</h3>
+                <ul id="listTransaksiSingkat">
+                    <li style="text-align:center; color:rgba(255,255,255,0.3); padding:20px;">Belum ada transaksi</li>
+                </ul>
+            </div>
+
+            <!-- Tombol Reset (untuk development) -->
+            <div style="padding: 0 16px; margin-top: 10px;">
+                <button id="btnResetData" style="width:100%; padding:12px; background:#dc2626; border:none; border-radius:12px; color:white; font-weight:700; cursor:pointer;">
+                    ⚠️ Reset Semua Data (ke 0)
+                </button>
+            </div>
+        </section>
+
+        <!-- ========================================== -->
+        <!-- PAGE: TRANSAKSI                           -->
+        <!-- ========================================== -->
+        <section id="page-transaksi" class="page" style="display:none;">
+            <!-- Header Transaksi -->
+            <div class="transaksi-header">
+                <button class="btn-back" id="btnBackDashboard">← Kembali</button>
+                <h2 id="transaksi-title">Tambah Transaksi</h2>
+            </div>
+
+            <!-- ========================================== -->
+            <!-- FORM DANA                                 -->
+            <!-- ========================================== -->
+            <div id="form-dana" class="form-category" style="display:none;">
+                <div class="wallet-info">💳 Transaksi Dana</div>
+                <form id="formDana">
+                    <!-- 1. Pilihan Top Up / Tarik -->
+                    <select id="dana-tipe" required>
+                        <option value="topup">Top Up Dana (Isi Saldo)</option>
+                        <option value="tarik">Tarik Tunai</option>
+                    </select>
+                    
+                    <!-- 2. Nominal -->
+                    <input type="number" id="dana-nominal" placeholder="Nominal (contoh: 100000)" required />
+                    
+                    <!-- 3. Biaya Admin (input bebas) -->
+                    <input type="number" id="dana-biaya-admin" placeholder="Biaya Admin (contoh: 3000)" required />
+                    
+                    <!-- Keterangan -->
+                    <p style="font-size:12px; color:rgba(255,255,255,0.4); margin-top:4px;">
+                        💡 Nanti akan ada konfirmasi: potong atau pisahkan admin.
+                    </p>
+                    
+                    <button type="submit">💾 Simpan Transaksi</button>
+                </form>
+            </div>
+            <!-- ========================================== -->
+            <!-- FORM DANA ENDS                               -->
+            <!-- ========================================== -->
+
+            <!-- ========================================== -->
+            <!-- FORM SERVIS HP                            -->
+            <!-- ========================================== -->
+            <div id="form-servis" class="form-category" style="display:none;">
+                <div class="wallet-info">🔧 Transaksi Servis HP</div>
+                <form id="formServis">
+                    <!-- 1. Deskripsi Kerusakan -->
+                    <input type="text" id="servis-kerusakan" placeholder="Rusak apa? (contoh: LCD Pecah)" required />
+                    
+                    <!-- 2. Beli Sparepart? -->
+                    <label style="font-size:13px; color:rgba(255,255,255,0.5); margin-top:4px; display:block;">
+                        🔩 Beli Sparepart?
+                    </label>
+                    <select id="servis-perlu-sparepart" required>
+                        <option value="tidak">❌ Tidak</option>
+                        <option value="ya">✅ Ya, butuh sparepart</option>
+                    </select>
+                    
+                    <!-- 3. Detail Sparepart (hidden default) -->
+                    <div id="servis-sparepart-detail" style="display:none; margin-top: 8px; padding: 12px; background: rgba(255,255,255,0.03); border-radius: 12px; border-left: 4px solid #f5a623;">
+                        <label style="font-size:12px; color:rgba(255,255,255,0.4);">📦 Detail Sparepart</label>
+                        <input type="text" id="servis-sparepart-nama" placeholder="Nama Sparepart (contoh: LCD)" />
+                        <input type="number" id="servis-sparepart-harga" placeholder="Harga Sparepart (Rp)" />
+                        <select id="servis-sparepart-sumber">
+                            <option value="cash">💵 Sumber Dana: Cash</option>
+                            <option value="dana">💳 Sumber Dana: Dana</option>
+                        </select>
+                    </div>
+                    
+                    <!-- 4. Harga Servis (total) -->
+                    <input type="number" id="servis-harga" placeholder="Harga Servis (Rp)" required />
+                    
+                    <!-- 5. Metode Pembayaran -->
+                    <select id="servis-metode-bayar" required>
+                        <option value="cash">💵 Cash</option>
+                        <option value="dana">💳 Dana / QRIS</option>
+                    </select>
+                    
+                    <!-- Keterangan -->
+                    <p style="font-size:12px; color:rgba(255,255,255,0.4); margin-top:4px;">
+                        💡 Harga Servis masuk ke wallet metode bayar.<br>
+                        💡 Jika beli sparepart, akan dicatat sebagai pengeluaran terpisah.
+                    </p>
+                    
+                    <button type="submit">💾 Simpan Transaksi Servis</button>
+                </form>
+            </div>
+            <!-- ========================================== -->
+            <!-- FORM SERVIS HP ENDS                       -->
+            <!-- ========================================== -->
+
+            <!-- ========================================== -->
+            <!-- FORM AGEN PULSA                           -->
+            <!-- ========================================== -->
+            <div id="form-agen" class="form-category" style="display:none;">
+                <div class="wallet-info">📱 Transaksi Agen Pulsa</div>
+                <form id="formAgen">
+                    <!-- 1. Kategori Beli Apa -->
+                    <select id="agen-kategori" required>
+                        <option value="pulsa">📱 Pulsa HP</option>
+                        <option value="token">⚡ Token Listrik</option>
+                        <option value="pdam">💧 PDAM</option>
+                        <option value="kuota">📶 Kuota Data</option>
+                        <option value="lainnya">📝 Lainnya (isi manual)</option>
+                    </select>
+                    
+                    <!-- 2. Input teks untuk "Lainnya" (hidden default) -->
+                    <input type="text" id="agen-kategori-lain" placeholder="Masukkan kategori (contoh: Voucher Game)" style="display:none;" />
+
+                    <!-- ===== BARU! Input Keterangan ===== -->
+                    <input type="text" id="agen-keterangan" placeholder="Keterangan (contoh: Kuota Flex 3GB)" />
+                    
+                    <!-- 3. Nominal Harga -->
+                    <input type="number" id="agen-nominal" placeholder="Nominal (Rp)" required />
+                    
+                    <!-- 4. Biaya Admin (BARU!) -->
+                    <input type="number" id="agen-biaya-admin" placeholder="Biaya Admin (contoh: 2000)" required />
+                    
+                    <!-- 5. Metode Pembayaran -->
+                    <select id="agen-metode-bayar" required>
+                        <option value="cash">💵 Cash</option>
+                        <option value="dana">💳 Dana / QRIS</option>
+                    </select>
+                    
+                    <!-- Keterangan -->
+                    <p style="font-size:12px; color:rgba(255,255,255,0.4); margin-top:4px;">
+                        💡 Saldo Agen Pulsa akan berkurang.<br>
+                        💡 Uang masuk ke wallet yang dipilih (termasuk admin otomatis masuk ke wallet yang sama).
+                    </p>
+                    
+                    <button type="submit">💾 Simpan Transaksi</button>
+                </form>
+            </div>
+            <!-- ========================================== -->
+            <!-- FORM AGEN PULSA ENDS                       -->
+            <!-- ========================================== -->
+
+            <!-- ========================================== -->
+            <!-- FORM AKSESORIS & KARTU                     -->
+            <!-- ========================================== -->
+            <div id="form-aksesoris" class="form-category" style="display:none;">
+                <div class="wallet-info">🛍️ Transaksi Aksesoris & Kartu</div>
+                <form id="formAksesoris">
+                    <!-- 1. Nama Aksesoris / Kartu -->
+                    <input type="text" id="aksesoris-nama" placeholder="Nama Aksesoris / Kartu (contoh: Case HP)" required />
+                    
+                    <!-- 2. Nominal Harga -->
+                    <input type="number" id="aksesoris-nominal" placeholder="Harga Jual (Rp)" required />
+                    
+                    <!-- 3. Metode Pembayaran -->
+                    <select id="aksesoris-metode-bayar" required>
+                        <option value="cash">💵 Cash</option>
+                        <option value="dana">💳 Dana / QRIS</option>
+                    </select>
+                    
+                    <button type="submit">💾 Simpan Transaksi</button>
+                </form>
+            </div>
+            <!-- ========================================== -->
+            <!-- FORM AKSESORIS & KARTU ENDS                -->
+            <!-- ========================================== -->
+
+            <!-- ========================================== -->
+            <!-- FORM RESTOCK                              -->
+            <!-- ========================================== -->
+            <div id="form-restock" class="form-category" style="display:none;">
+                <div class="wallet-info">📦 Transaksi Restock</div>
+                <form id="formRestock">
+                    <!-- 1. Nama Barang -->
+                    <input type="text" id="restock-nama" placeholder="Beli apa? (contoh: Pulsa 10rb)" required />
+                    
+                    <!-- 2. Jumlah -->
+                    <input type="number" id="restock-jumlah" placeholder="Berapa banyak? (contoh: 5)" required />
+                    
+                    <!-- 3. Nominal Harga (total) -->
+                    <input type="number" id="restock-nominal" placeholder="Nominal Harga (Rp)" required />
+                    
+                    <!-- 4. Metode Bayar -->
+                    <select id="restock-metode-bayar" required>
+                        <option value="cash">💵 Cash</option>
+                        <option value="dana">💳 Dana / QRIS</option>
+                    </select>
+                    
+                    <button type="submit">💾 Simpan Transaksi</button>
+                </form>
+            </div>
+            <!-- ========================================== -->
+            <!-- FORM RESTOCK ENDS                          -->
+            <!-- ========================================== -->
+        </section>
+
+        <!-- === PAGE: RIWAYAT === -->
+        <!-- ========================================== -->
+        <!-- PAGE: RIWAYAT                             -->
+        <!-- ========================================== -->
+        <section id="page-riwayat" class="page" style="display:none;">
+            <div class="page-header">
+                <h2>📋 Riwayat Transaksi</h2>
+                <p style="color:rgba(255,255,255,0.4);font-size:14px;">
+                    Semua transaksi dan aktivitas tercatat di sini
+                </p>
+            </div>
+            
+            <!-- Tab Navigator -->
+            <div class="tab-nav">
+                <button class="tab-btn active" data-tab="riwayat">📝 Transaksi</button>
+                <button class="tab-btn" data-tab="log">📜 Log Aktivitas</button>
+            </div>
+            
+            <!-- ===== TAB 1: TRANSAKSI ===== -->
+            <div id="tab-riwayat" class="tab-content">
+                <!-- Filter -->
+                <div class="filter-riwayat">
+                    <select id="filterKategori">
+                        <option value="all">📌 Semua Kategori</option>
+                        <option value="Dana">💳 Dana</option>
+                        <option value="Servis HP">🔧 Servis HP</option>
+                        <option value="Agen Pulsa">📱 Agen Pulsa</option>
+                        <option value="Aksesoris & Kartu">🛍️ Aksesoris & Kartu</option>
+                        <option value="Restock">📦 Restock</option>
+                        <option value="Servis HP (Sparepart)">🔩 Sparepart</option>
+                    </select>
+                    <select id="filterWallet">
+                        <option value="all">💼 Semua Wallet</option>
+                        <option value="cash">💵 Cash</option>
+                        <option value="dana">💳 Dana</option>
+                        <option value="agen">📱 Agen Pulsa</option>
+                    </select>
+                </div>
+                
+                <!-- Daftar Transaksi -->
+                <div class="daftar-riwayat">
+                    <ul id="listRiwayatTransaksi">
+                        <!-- Akan diisi JavaScript -->
+                    </ul>
+                </div>
+            </div>
+            
+            <!-- ===== TAB 2: LOG AKTIVITAS ===== -->
+            <div id="tab-log" class="tab-content" style="display:none;">
+                <div class="daftar-log">
+                    <ul id="listLogAktivitas">
+                        <!-- Akan diisi JavaScript -->
+                    </ul>
+                </div>
+            </div>
+        </section>
+        <!-- === PAGE: RIWAYAT ENDS === -->
+
+        <!-- === PAGE: LAPORAN === -->
+        <!-- ========================================== -->
+        <!-- PAGE: LAPORAN                             -->
+        <!-- ========================================== -->
+        <section id="page-laporan" class="page" style="display:none;">
+            <div class="page-header">
+                <h2>📄 Laporan Keuangan</h2>
+                <p style="color:rgba(255,255,255,0.4);font-size:14px;">
+                    Semua laporan bisa di-export ke Excel
+                </p>
+            </div>
+            
+            <!-- Filter Periode -->
+            <div class="filter-laporan">
+                <select id="filterBulanLaporan">
+                    <option value="all">📅 Semua Waktu</option>
+                    <option value="2026-08">Agustus 2026</option>
+                    <option value="2026-09">September 2026</option>
+                    <option value="2026-10">Oktober 2026</option>
+                    <option value="2026-11">November 2026</option>
+                    <option value="2026-12">Desember 2026</option>
+                    <option value="2027-01">Januari 2027</option>
+                    <option value="2027-02">Februari 2027</option>
+                    <option value="2027-03">Maret 2027</option>
+                    <option value="2027-04">April 2027</option>
+                    <option value="2027-05">Mei 2027</option>
+                    <option value="2027-06">Juni 2027</option>
+                    <option value="2027-07">Juli 2027</option>
+                    <option value="2027-08">Agustus 2027</option>
+                </select>
+                <button id="btnExportLaporan" class="btn-export">📤 Export Excel (CSV)</button>
+            </div>
+            
+            <!-- Tab Navigator Laporan -->
+            <div class="tab-nav-laporan">
+                <button class="tab-btn-laporan active" data-tab="keuangan">💰 Keuangan</button>
+                <button class="tab-btn-laporan" data-tab="transaksi">📋 Transaksi</button>
+                <button class="tab-btn-laporan" data-tab="sparepart">🔩 Sparepart</button>
+            </div>
+            
+            <!-- ===== TAB 1: LAPORAN KEUANGAN ===== -->
+            <div id="tab-keuangan" class="tab-laporan">
+                <div class="table-wrapper">
+                    <table id="tabelKeuangan">
+                        <thead>
+                            <tr>
+                                <th>NO</th>
+                                <th>Tanggal</th>
+                                <th>Jenis Transaksi</th>
+                                <th>Keterangan</th>
+                                <th>Uang Keluar Dari</th>
+                                <th>Uang Masuk Dari</th>
+                                <th>Uang Keluar</th>
+                                <th>Uang Masuk</th>
+                                <th>Saldo Dana</th>
+                                <th>Saldo Cash</th>
+                                <th>Saldo Agen Pulsa</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tbodyKeuangan">
+                            <!-- Akan diisi JavaScript -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            
+            <!-- ===== TAB 2: LAPORAN TRANSAKSI ===== -->
+            <div id="tab-transaksi" class="tab-laporan">
+                <div class="table-wrapper">
+                    <table id="tabelTransaksi">
+                        <thead>
+                            <tr>
+                                <th>NO</th>
+                                <th>Tanggal</th>
+                                <th>Jenis Transaksi</th>
+                                <th>Keterangan</th>
+                                <th>Harga</th>
+                                <th>Metode Pembayaran</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tbodyTransaksi">
+                            <!-- Akan diisi JavaScript -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            
+            <!-- ===== TAB 3: LAPORAN SPAREPART ===== -->
+            <div id="tab-sparepart" class="tab-laporan">
+                <div class="table-wrapper">
+                    <table id="tabelSparepart">
+                        <thead>
+                            <tr>
+                                <th>NO</th>
+                                <th>Tanggal</th>
+                                <th>Nama Sparepart</th>
+                                <th>Jumlah</th>
+                                <th>Nominal Harga</th>
+                                <th>Metode Pembayaran</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tbodySparepart">
+                            <!-- Akan diisi JavaScript -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+        <!-- === PAGE: LAPORAN ENDS=== -->
+    </main>
+
+    <!-- ========================================== -->
+    <!-- 5. BOTTOM NAVIGATION                      -->
+    <!-- ========================================== -->
+    <nav class="bottom-nav">
+        <button class="bottom-btn active" data-page="dashboard">
+            <span class="icon">🏠</span>
+            <span class="label">HOME</span>
+        </button>
+        <button class="bottom-btn" data-page="riwayat">
+            <span class="icon">📋</span>
+            <span class="label">RIWAYAT</span>
+        </button>
+        <button class="bottom-btn" data-page="laporan">
+            <span class="icon">📄</span>
+            <span class="label">LAPORAN</span>
+        </button>
+    </nav>
+
+    <!-- ========================================== -->
+    <!-- 6. MODAL EDIT SALDO                       -->
+    <!-- ========================================== -->
+    <div id="editSaldoModal" class="modal" style="display:none;">
+        <div class="modal-content">
+            <h2>✏️ Edit Saldo</h2>
+            <p style="color:rgba(255,255,255,0.5);font-size:14px;margin-bottom:16px;">
+                Masukkan saldo awal masing-masing wallet
+            </p>
+            <label class="modal-label">Saldo Dana</label>
+            <input type="number" id="editDana" class="modal-input" placeholder="0" />
+            <label class="modal-label">Saldo Cash</label>
+            <input type="number" id="editCash" class="modal-input" placeholder="0" />
+            <label class="modal-label">Saldo Agen Pulsa</label>
+            <input type="number" id="editAgen" class="modal-input" placeholder="0" />
+            <div class="modal-actions">
+                <button class="btn-cancel" id="btnCancelEdit">Batal</button>
+                <button class="btn-save" id="btnSaveEdit">Simpan</button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- ========================================== -->
+    <!-- MODAL KONFIRMASI TRANSAKSI DANA            -->
+    <!-- ========================================== -->
+    <div id="modalKonfirmasiDana" class="modal" style="display:none;">
+        <div class="modal-content">
+            <h2>📋 Konfirmasi Transaksi</h2>
+            <div id="konfirmasi-detail" style="margin: 16px 0; padding: 16px; background: rgba(255,255,255,0.05); border-radius: 12px;">
+                <!-- Akan diisi JavaScript -->
+            </div>
+            <p style="color: rgb(248, 246, 246); font-size: 14px; margin-bottom: 16px;">
+                Apakah biaya admin akan dipotong dari nominal transaksi?
+            </p>
+            <div class="modal-actions">
+                <button class="btn-cancel" id="konfirmasi-potong">✅ Ya, Potong</button>
+                <button class="btn-save" id="konfirmasi-pisahkan">➡️ Tidak, Pisahkan</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ========================================== -->
+    <!-- MODAL KONFIRMASI METODE ADMIN              -->
+    <!-- ========================================== -->
+    <div id="modalMetodeAdmin" class="modal" style="display:none;">
+        <div class="modal-content">
+            <h2>💳 Pilih Metode Bayar Admin</h2>
+            <p style="color: rgb(248, 245, 245); font-size: 14px; margin: 12px 0 16px;">
+                Biaya admin akan dipisahkan dari nominal transaksi.
+                Pilih wallet tujuan untuk biaya admin:
+            </p>
+            <div class="modal-actions">
+                <button class="btn-cancel" id="metode-admin-cash">💵 Cash</button>
+                <button class="btn-save" id="metode-admin-dana">💳 Dana</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ========================================== -->
+    <!-- SCRIPTS                                    -->
+    <!-- ========================================== -->
+    <script src="https://unpkg.com/dexie@latest/dist/dexie.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <!-- App (inisialisasi & database) -->
+    <script src="js/app.js"></script>
+
+    <!-- Dashboard (menu & tampilan) -->
+    <script src="js/dashboard.js"></script>
+
+    <!-- Transaksi (form transaksi) -->
+    <script src="js/transaksi.js"></script>
+
+    <!-- Riwayat & Laporan (nanti) -->
+    <script src="js/riwayat.js"></script>
+    <script src="js/laporan.js"></script>
+
+</body>
+</html>
